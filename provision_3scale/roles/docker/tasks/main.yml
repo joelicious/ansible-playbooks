@@ -1,0 +1,50 @@
+---
+# This role installs docker and configures it.
+
+- name: verify dnf-plugins-core
+  package:
+    name: dnf-plugins-core
+    state: present
+
+- name: install docker repository
+  command: dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo warn=no
+
+- name: install docker
+  package:
+    name: docker-ce
+    state: present
+
+- name: install python-selinux
+  package:
+    name: libselinux-python
+    state: present
+
+- name: ensure group docker exists
+  group:
+    name: docker
+    system: yes
+    state: present
+
+- name: add group to user
+  user: 
+    name: "{{ remote_user }}"
+    group: docker
+    append: yes
+
+- name: create etc docker directory
+  file: 
+    path: /etc/docker
+    state: directory
+    mode: 0755
+
+- name: add insecure registries
+  template:
+    src: daemon.json.insecure-registries
+    dest: /etc/docker/daemon.json
+    force: yes
+
+- name: restart service docker, in all cases
+  service:
+    name: docker
+    daemon_reload: yes
+    state: restarted

@@ -1,0 +1,12 @@
+---
+## This playbook configure a host for docker, openshift, 3Scale
+
+# Configure docker
+- name: configure docker
+  hosts: playground
+  remote_user: "{{ remote_user }}"
+  become: yes
+ 
+  roles:
+  - docker
+  - openshift

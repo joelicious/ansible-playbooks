@@ -1,0 +1,4 @@
+---
+# User account used to ssh the hosts
+
+remote_user: joe

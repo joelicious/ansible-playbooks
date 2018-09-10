@@ -1,0 +1,22 @@
+---
+# This role installs openshift
+
+- name: install origin clients
+  package:
+    name: origin-clients
+    state: present
+
+- set_fact:
+    oc_tools_dir: "/usr/bin"
+
+- set_fact:
+    oc_cmd: "{{ oc_tools_dir }}/oc"
+
+- name: enable oc cluster up fact
+  set_fact:
+    oc_cluster_up_cmd: >-
+      {{ oc_cmd }} cluster up
+      --public-hostname={{ ansible_default_ipv4.address }}
+
+- name: run oc cluster up
+  shell: "{{ oc_cluster_up_cmd }}"
